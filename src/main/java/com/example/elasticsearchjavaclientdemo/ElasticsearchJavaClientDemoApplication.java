@@ -1,12 +1,26 @@
 package com.example.elasticsearchjavaclientdemo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.UUID;
+
+/**
+ * remove index:
+ * http delete :9200/<index-name>
+ *
+ * view indices:
+ * http :9200/_cat/indices
+ *
+ *
+ */
 @SpringBootApplication
 public class ElasticsearchJavaClientDemoApplication implements CommandLineRunner{
 
@@ -20,7 +34,9 @@ public class ElasticsearchJavaClientDemoApplication implements CommandLineRunner
 	@Override
 	public void run(String... strings) throws Exception {
 
-		CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate("hello");
+		String indexName = "demo-index";
+		String indexType = "demo-type";
+		CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
 
 		boolean acknowledged = createIndexRequestBuilder.execute().actionGet().isAcknowledged();
 		if (acknowledged) {
@@ -28,6 +44,19 @@ public class ElasticsearchJavaClientDemoApplication implements CommandLineRunner
 		} else {
 			System.out.println("index not created");
 		}
+
+		IndexRequestBuilder indexRequestBuilder = client.prepareIndex(indexName, indexType);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		Position position = new Position(UUID.randomUUID().toString(), "demo-position");
+		objectMapper.writeValueAsString(position);
+
+		indexRequestBuilder.setSource(objectMapper.writeValueAsString(position), XContentType.JSON);
+
+		String documentId = indexRequestBuilder.execute().actionGet().getId();
+
+		System.out.println(documentId);
+
 
 	}
 }

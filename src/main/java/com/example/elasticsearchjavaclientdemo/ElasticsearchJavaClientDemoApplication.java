@@ -36,6 +36,8 @@ public class ElasticsearchJavaClientDemoApplication implements CommandLineRunner
 
 		String indexName = "demo-index";
 		String indexType = "demo-type";
+		String id = UUID.randomUUID().toString();
+
 		CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
 
 		boolean acknowledged = createIndexRequestBuilder.execute().actionGet().isAcknowledged();
@@ -45,10 +47,11 @@ public class ElasticsearchJavaClientDemoApplication implements CommandLineRunner
 			System.out.println("index not created");
 		}
 
-		IndexRequestBuilder indexRequestBuilder = client.prepareIndex(indexName, indexType);
+		// do not ask ES to generate an id.
+		IndexRequestBuilder indexRequestBuilder = client.prepareIndex(indexName, indexType, id);
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		Position position = new Position(UUID.randomUUID().toString(), "demo-position");
+		Position position = new Position(id, "demo-position");
 		objectMapper.writeValueAsString(position);
 
 		indexRequestBuilder.setSource(objectMapper.writeValueAsString(position), XContentType.JSON);

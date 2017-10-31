@@ -3,3 +3,5 @@ spring:
     elasticsearch:
       cluster-name: elasticsearch_zoal
       cluster-nodes: localhost:9300
+
+      credentials: elastic:changeme

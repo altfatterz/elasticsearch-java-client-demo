@@ -18,6 +18,8 @@ public class ElasticsearchProperties {
      */
     private String clusterNodes;
 
+    private String credentials;
+
     /**
      * Additional properties used to configure the client.
      */
@@ -47,4 +49,11 @@ public class ElasticsearchProperties {
         this.properties = properties;
     }
 
+    public String getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(String credentials) {
+        this.credentials = credentials;
+    }
 }

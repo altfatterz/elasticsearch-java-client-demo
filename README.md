@@ -38,3 +38,5 @@ HTTP/1.1 200 OK
 Run the simple client `ElasticsearchJavaClientDemoApplication`
 
 
+More details here:
+https://www.elastic.co/guide/en/x-pack/6.0/java-clients.html
